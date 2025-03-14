@@ -6,7 +6,7 @@ pandas
 ipykernel
 torch
 streamlit
-lanchain
+langchain
 langgraph
 langchain-core
 langchain-community
