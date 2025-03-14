@@ -1,0 +1,15 @@
+lamini
+python_dotenv
+transformers
+numpy
+pandas
+ipykernel
+torch
+streamlit
+lanchain
+langgraph
+langchain-core
+langchain-community
+langchain-openai
+langchain-groq
+dotenv
