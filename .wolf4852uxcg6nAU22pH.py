@@ -17,11 +17,10 @@ if not openai_api_key:
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
 
 # Define the prompt template
-prompt_template = ChatPromptTemplate.from_template(
+prompt = ChatPromptTemplate.from_template(
     """
-    You are Ada, a helpful health and lifestyle coach specializing in nutrition, exercise, and stress management for PCOS.
+    You are Ada, a helpful health and lifestyle coach specializing in nutrition, exercise, and stress management for PCOS. 
     Use the context below to answer user queries. If the context is insufficient, provide general advice.
-    Please answer in {lang}.
 
     Context:
     {context}
@@ -30,26 +29,18 @@ prompt_template = ChatPromptTemplate.from_template(
     """
 )
 
-# Define language options for translation
-language_options = {
-    "English": "English",
-    "Yoruba": "Yoruba",
-    "Igbo": "Igbo",
-    "Hausa": "Hausa"
-}
-
 # Image paths
-MAIN_IMAGE_PATH = "Untitled design .png"
+MAIN_IMAGE_PATH = "Untitled design (1).png"
 FOOTER_IMAGE_PATH = "pngwing.com (25).png"
 COMMUNITY_SUPPORT_IMAGE_PATH = "image2.jpg"
-FAQ_IMAGE_PATH ="image3.jpg"
+FAQ_IMAGE_PATH = "image3.jpg"
 TRACKING_TOOLS_IMAGE_PATH = "image4.jpg"
-MENTAL_HEALTH_PATH ="image5.jpg"
+MENTAL_HEALTH_PATH = "image5.jpg"
 HERBAL_REMEDIES_PATH = "image6.jpg"
 TESTING_INFO_PATH = "image7.png"
 LIFESTYLE_TIPS_PATH = "image9.jpg"
 FOOD_RECOMMENDATIONS_PATH = "image8.jpg"
-TELEMEDICINE_PATH ="image10.jpg"
+TELEMEDICINE_PATH = "image10.jpg"
 
 # Trusted Gynecologists Directory
 GYNECOLOGISTS_BY_STATE = {
@@ -307,24 +298,26 @@ def main():
         )
 
         # Input for user queries
-    user_input = st.text_input("💡 Curious about PCOS? Ask Ada!")
-    selected_language = st.selectbox("Choose a language:", list(language_options.keys()))
-    if st.button("Submit"):
-        if user_input.strip():
-            context = "PCOS-specific health advice, including nutrition, exercise, and stress management."
-            formatted_prompt = prompt_template.format(
-                context=context,
-                input=user_input,
-                lang=language_options[selected_language]
-            )
-            try:
-                with st.spinner("Ada is thinking..."):
-                    response_text = llm.predict(formatted_prompt)
-                    st.markdown(f"### Ada's Response ({selected_language}):\n\n{response_text}")
-            except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
-        else:
-            st.warning("Please enter a question to receive advice.")
+        user_input = st.text_input("💡 Curious about PCOS? Ask Ada!")
+        if st.button("Submit"):
+            if user_input.strip():
+                context = "PCOS-specific health advice, including nutrition, exercise, and stress management."
+                formatted_prompt = prompt.format(context=context, input=user_input)
+
+                try:
+                    with st.spinner("Ada is thinking..."):
+                        response = llm([HumanMessage(content=formatted_prompt)])
+                    st.markdown(f"### Ada's Response: \n\n{response.content}")
+                except Exception as e:
+                    st.error(f"An error occurred: {str(e)}")
+            else:
+                st.warning("Please enter a question to receive advice.")
+
+        # Display the footer image at the bottom
+        try:
+            st.image(FOOTER_IMAGE_PATH, use_container_width=True, caption="Know it. Fight it. Manage it.")
+        except FileNotFoundError:
+            st.warning("Footer image not found. Please check the path.")
 
     # Community & Support Section
     elif main_menu == "Community & Support":

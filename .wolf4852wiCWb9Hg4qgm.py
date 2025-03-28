@@ -39,7 +39,7 @@ language_options = {
 }
 
 # Image paths
-MAIN_IMAGE_PATH = "Untitled design .png"
+MAIN_IMAGE_PATH = "image4.jpg"
 FOOTER_IMAGE_PATH = "pngwing.com (25).png"
 COMMUNITY_SUPPORT_IMAGE_PATH = "image2.jpg"
 FAQ_IMAGE_PATH ="image3.jpg"

@@ -39,17 +39,17 @@ language_options = {
 }
 
 # Image paths
-MAIN_IMAGE_PATH = "Untitled design .png"
-FOOTER_IMAGE_PATH = "pngwing.com (25).png"
-COMMUNITY_SUPPORT_IMAGE_PATH = "image2.jpg"
-FAQ_IMAGE_PATH ="image3.jpg"
-TRACKING_TOOLS_IMAGE_PATH = "image4.jpg"
-MENTAL_HEALTH_PATH ="image5.jpg"
-HERBAL_REMEDIES_PATH = "image6.jpg"
-TESTING_INFO_PATH = "image7.png"
-LIFESTYLE_TIPS_PATH = "image9.jpg"
-FOOD_RECOMMENDATIONS_PATH = "image8.jpg"
-TELEMEDICINE_PATH ="image10.jpg"
+MAIN_IMAGE_PATH = "CircleCare_AI\image4.jpg"
+FOOTER_IMAGE_PATH = "CircleCare_AI\pngwing.com (25).png"
+COMMUNITY_SUPPORT_IMAGE_PATH = "CircleCare_AI\image2.jpg"
+FAQ_IMAGE_PATH = "CircleCare_AI\image3.jpg"
+TRACKING_TOOLS_IMAGE_PATH = "CircleCare_AI\image4.jpg"
+MENTAL_HEALTH_PATH = "CircleCare_AI\image5.jpg"
+HERBAL_REMEDIES_PATH = "CircleCare_AI\image6.jpg"
+TESTING_INFO_PATH = "CircleCare_AI\image7.png"
+LIFESTYLE_TIPS_PATH = "CircleCare_AI\image9.jpg"
+FOOD_RECOMMENDATIONS_PATH = "CircleCare_AI\image8.jpg"
+TELEMEDICINE_PATH = "CircleCare_AI\image10.jpg"
 
 # Trusted Gynecologists Directory
 GYNECOLOGISTS_BY_STATE = {
@@ -307,8 +307,7 @@ def main():
         )
 
         # Input for user queries
-    user_input = st.text_input("💡 Curious about PCOS? Ask Ada!")
-    selected_language = st.selectbox("Choose a language:", list(language_options.keys()))
+        user_input = st.text_input("💡 Curious about PCOS? Ask Ada!")
     if st.button("Submit"):
         if user_input.strip():
             context = "PCOS-specific health advice, including nutrition, exercise, and stress management."

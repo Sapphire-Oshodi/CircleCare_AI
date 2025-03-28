@@ -1,22 +1,37 @@
+import torch
 import streamlit as st
 import os
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI  # Updated import
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
-# Load environment variables
-load_dotenv()
+# Set page configuration
+st.set_page_config(
+    page_title="CycleCare AI - Comprehensive PCOS Management",
+    layout="wide",
+)
 
-# Set up API key (ensure it's set in your .env file)
+# Ensure API key is set
+load_dotenv()  # Load environment variables from .env file
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
-    st.error("API key not found. Please set it in your .env file.")
+    st.error("API key not found. Please set it in your environment variables.")
 
-# Initialize the language model
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
+# Define language options for translation (for GPT instructions)
+language_options = {
+    "English": "English",
+    "Yoruba": "Yoruba",
+    "Igbo": "Igbo",
+    "Hausa": "Hausa"
+}
 
-# Define the prompt template
+# UI Components
+st.title("💡 Curious about PCOS? Ask Ada!")
+selected_language = st.selectbox("Choose a language:", list(language_options.keys()))
+user_input = st.text_input("Type your question here:")
+
+# Define the prompt template that instructs GPT-3.5 to answer in the selected language
 prompt_template = ChatPromptTemplate.from_template(
     """
     You are Ada, a helpful health and lifestyle coach specializing in nutrition, exercise, and stress management for PCOS.
@@ -30,26 +45,36 @@ prompt_template = ChatPromptTemplate.from_template(
     """
 )
 
-# Define language options for translation
-language_options = {
-    "English": "English",
-    "Yoruba": "Yoruba",
-    "Igbo": "Igbo",
-    "Hausa": "Hausa"
-}
+# Initialize the OpenAI language model
+llm = ChatOpenAI(
+    model_name="gpt-3.5-turbo",
+    temperature=0.7,
+    openai_api_key=openai_api_key
+)
+
+if st.button("Submit"):
+    if user_input.strip():
+        context = "PCOS-specific health advice, including nutrition, exercise, and stress management."
+        formatted_prompt = prompt_template.format(
+            context=context,
+            input=user_input,
+            lang=language_options[selected_language]
+        )
+        try:
+            with st.spinner("Ada is thinking..."):
+                response_text = llm.predict(formatted_prompt)
+                st.markdown(f"### Ada's Response ({selected_language}):\n\n{response_text}")
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
+    else:
+        st.warning("Please enter a question to receive advice.")
 
 # Image paths
-MAIN_IMAGE_PATH = "Untitled design .png"
+MAIN_IMAGE_PATH = "Untitled design (1).png"
 FOOTER_IMAGE_PATH = "pngwing.com (25).png"
-COMMUNITY_SUPPORT_IMAGE_PATH = "image2.jpg"
-FAQ_IMAGE_PATH ="image3.jpg"
-TRACKING_TOOLS_IMAGE_PATH = "image4.jpg"
-MENTAL_HEALTH_PATH ="image5.jpg"
-HERBAL_REMEDIES_PATH = "image6.jpg"
-TESTING_INFO_PATH = "image7.png"
 LIFESTYLE_TIPS_PATH = "image9.jpg"
 FOOD_RECOMMENDATIONS_PATH = "image8.jpg"
-TELEMEDICINE_PATH ="image10.jpg"
+TELEMEDICINE_PATH = "image10.jpg"
 
 # Trusted Gynecologists Directory
 GYNECOLOGISTS_BY_STATE = {
@@ -134,8 +159,6 @@ GYNECOLOGISTS_BY_STATE = {
         {"name": "Dr. Emmanuel Essien", "hospital": "Divine Grace Women’s Clinic"},
     ],
 }
-
-
 
 # Community & Support groups
 SUPPORT_GROUPS = """
@@ -307,24 +330,29 @@ def main():
         )
 
         # Input for user queries
-    user_input = st.text_input("💡 Curious about PCOS? Ask Ada!")
-    selected_language = st.selectbox("Choose a language:", list(language_options.keys()))
-    if st.button("Submit"):
-        if user_input.strip():
-            context = "PCOS-specific health advice, including nutrition, exercise, and stress management."
-            formatted_prompt = prompt_template.format(
-                context=context,
-                input=user_input,
-                lang=language_options[selected_language]
-            )
-            try:
-                with st.spinner("Ada is thinking..."):
-                    response_text = llm.predict(formatted_prompt)
-                    st.markdown(f"### Ada's Response ({selected_language}):\n\n{response_text}")
-            except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
-        else:
-            st.warning("Please enter a question to receive advice.")
+        user_input = st.text_input("💡 Curious about PCOS? Ask Ada!")
+        if st.button("Submit"):
+            if user_input.strip():
+                context = "PCOS-specific health advice, including nutrition, exercise, and stress management."
+                formatted_prompt = prompt_template.format(
+                    context=context,
+                    input=user_input,
+                    lang=language_options[selected_language]
+                )
+                try:
+                    with st.spinner("Ada is thinking..."):
+                        response_text = llm.predict(formatted_prompt)
+                        st.markdown(f"### Ada's Response ({selected_language}):\n\n{response_text}")
+                except Exception as e:
+                    st.error(f"An error occurred: {str(e)}")
+            else:
+                st.warning("Please enter a question to receive advice.")
+
+        # Display the footer image at the bottom
+        try:
+            st.image(FOOTER_IMAGE_PATH, use_container_width=True, caption="Know it. Fight it. Manage it.")
+        except FileNotFoundError:
+            st.warning("Footer image not found. Please check the path.")
 
     # Community & Support Section
     elif main_menu == "Community & Support":
@@ -350,7 +378,7 @@ def main():
             st.write(f"### Trusted Gynecologists in {selected_state}:")
             for doctor in doctors:
                 st.write(f"- **{doctor['name']}** at {doctor['hospital']}")
-
+                
         elif sub_option == "Laboratories":
             st.write("### Laboratories in Nigeria")
             st.write("""
