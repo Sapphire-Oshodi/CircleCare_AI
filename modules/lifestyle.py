@@ -1,46 +1,17 @@
 import streamlit as st
-import os
-from dotenv import load_dotenv
-from langchain_community.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema import HumanMessage
-
-# Load environment variables
-load_dotenv()
-
-# Set up API key (ensure it's set in your .env file)
-openai_api_key = os.getenv("OPENAI_API_KEY")
-if not openai_api_key:
-    st.error("API key not found. Please set it in your .env file.")
-
-# Initialize the language model
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
-
-# Define the prompt template
-prompt = ChatPromptTemplate.from_template(
-    """
-    You are Ada, a helpful health and lifestyle coach specializing in nutrition, exercise, and stress management for PCOS. 
-    Use the context below to answer user queries. If the context is insufficient, provide general advice.
-
-    Context:
-    {context}
-
-    Question: {input}
-    """
-)
+import pandas as pd
+import numpy as np
 
 # Image paths
-MAIN_IMAGE_PATH = "Untitled design (1).png"
-FOOTER_IMAGE_PATH = "pngwing.com (25).png"
-COMMUNITY_SUPPORT_IMAGE_PATH = "image2.jpg"
-FAQ_IMAGE_PATH = "image3.jpg"
-TRACKING_TOOLS_IMAGE_PATH = "image4.jpg"
-MENTAL_HEALTH_PATH = "image5.jpg"
-HERBAL_REMEDIES_PATH = "image6.jpg"
-TESTING_INFO_PATH = "image7.png"
-LIFESTYLE_TIPS_PATH = "image9.jpg"
-FOOD_RECOMMENDATIONS_PATH = "image8.jpg"
-TELEMEDICINE_PATH = "image10.jpg"
+MAIN_IMAGE_PATH = "assets/Untitled_design.png"
+FOOTER_IMAGE_PATH = "assets/pngwing_25.png"
+FAQ_IMAGE_PATH = "assets/image3.jpg"
+TRACKING_TOOLS_IMAGE_PATH = "assets/image4.jpg"
+MENTAL_HEALTH_PATH = "assets/image5.jpg"
+HERBAL_REMEDIES_PATH = "assets/image6.jpg"
+TESTING_INFO_PATH = "assets/image7.png"
+LIFESTYLE_TIPS_PATH = "assets/image9.jpg"
+FOOD_RECOMMENDATIONS_PATH = "assets/image8.jpg"
 
 # Trusted Gynecologists Directory
 GYNECOLOGISTS_BY_STATE = {
@@ -125,19 +96,6 @@ GYNECOLOGISTS_BY_STATE = {
         {"name": "Dr. Emmanuel Essien", "hospital": "Divine Grace Women’s Clinic"},
     ],
 }
-
-
-
-# Community & Support groups
-SUPPORT_GROUPS = """
-### Local PCOS Support Groups You Can Join in Nigeria
-
-- **Cysters Advocate**: [Join WhatsApp Group](https://chat.whatsapp.com/F9mezTC19kFFajwjGneSGb)  
-- **That.PCOS.Chick**: [Follow on Instagram](https://www.instagram.com/that.pcos.chick?igsh=MXNqdWQ5cW9ybXI2cQ==)  
-- **PCOS Conquerors**: [Follow on Instagram](https://www.instagram.com/pcosconquerors?igsh=cnphY3l0eWdicDBp)  
-- **The Fit Priest** (aka Selema ‘That’ PCOS Babe): [Follow on Instagram](https://www.instagram.com/thefitpriest?igsh=bHY0YjFodGd5dXoz) 
-- **PCOS Awareness Association**: [Visit Official Website](https://www.pcosaa.org/)
-"""
 
 # PCOS-related resources
 PCOS_STATISTICS = """
@@ -244,8 +202,6 @@ def main():
         "Choose a section:",
         [
             "Home",
-            "Ask Ada - PCOS Companion",
-            "Telemedicine",
             "Food Recommendations",
             "Lifestyle Tips",
             "Testing Information",
@@ -253,7 +209,6 @@ def main():
             "Mental Health Resources",
             "Tracking Tools",
             "FAQs",
-            "Community & Support",
         ]
     )
 
@@ -273,108 +228,6 @@ def main():
         except FileNotFoundError:
             st.warning("Main image not found. Please check the path.")
 
-    # Ask Ada Section
-    elif main_menu == "Ask Ada - PCOS Companion":
-        st.subheader("Ask Ada - Your PCOS Companion")
-        
-        # Display the first image at the top
-        try:
-            st.image(MAIN_IMAGE_PATH, use_container_width=True)
-        except FileNotFoundError:
-            st.warning("Main image not found. Please check the path.")
-
-        # Main content
-        st.markdown(
-            "<h2 style='color: #070F2B; font-family: Helvetica;'>Hi, I'm Ada, your PCOS Expert!</h2>",
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            "<p style='font-size: 16px; font-family: Arial; color: #070F2B;'>"
-            "I'm here to guide you in understanding and managing PCOS effectively. "
-            "Whether it's about symptoms, treatments, lifestyle changes, or anything else, feel free to ask your questions. "
-            "Together, we can navigate the journey to better health and well-being."
-            "</p>",
-            unsafe_allow_html=True,
-        )
-
-        # Input for user queries
-        user_input = st.text_input("💡 Curious about PCOS? Ask Ada!")
-        if st.button("Submit"):
-            if user_input.strip():
-                context = "PCOS-specific health advice, including nutrition, exercise, and stress management."
-                formatted_prompt = prompt.format(context=context, input=user_input)
-
-                try:
-                    with st.spinner("Ada is thinking..."):
-                        response = llm([HumanMessage(content=formatted_prompt)])
-                    st.markdown(f"### Ada's Response: \n\n{response.content}")
-                except Exception as e:
-                    st.error(f"An error occurred: {str(e)}")
-            else:
-                st.warning("Please enter a question to receive advice.")
-
-        # Display the footer image at the bottom
-        try:
-            st.image(FOOTER_IMAGE_PATH, use_container_width=True, caption="Know it. Fight it. Manage it.")
-        except FileNotFoundError:
-            st.warning("Footer image not found. Please check the path.")
-
-    # Community & Support Section
-    elif main_menu == "Community & Support":
-        st.subheader("Community & Support")
-        st.image(COMMUNITY_SUPPORT_IMAGE_PATH, use_container_width=True, caption="Connecting the PCOS Community")
-        st.markdown(SUPPORT_GROUPS, unsafe_allow_html=True)
-
-    # Telemedicine Section
-    elif main_menu == "Telemedicine":
-        st.subheader("Telemedicine")
-        
-        try:
-            st.image(TELEMEDICINE_PATH, use_container_width=True)
-        except FileNotFoundError:
-            st.warning("Telemedicine image not found. Please check the path.")
-
-        sub_option = st.sidebar.radio(
-            "Telemedicine Options:", ["Gynecologists Directory", "Laboratories", "Pharmacies", "PCOS Drugs"]
-        )
-        if sub_option == "Gynecologists Directory":
-            selected_state = st.selectbox("Select a state:", list(GYNECOLOGISTS_BY_STATE.keys()))
-            doctors = GYNECOLOGISTS_BY_STATE.get(selected_state, [])
-            st.write(f"### Trusted Gynecologists in {selected_state}:")
-            for doctor in doctors:
-                st.write(f"- **{doctor['name']}** at {doctor['hospital']}")
-
-        elif sub_option == "Laboratories":
-            st.write("### Laboratories in Nigeria")
-            st.write("""
-            - **Synlab Nigeria**: Synlab offers a range of diagnostic tests and has multiple locations across Nigeria. [Visit Synlab](https://www.synlab.com.ng/)
-            - **Clina-Lancet Laboratories**: Provides comprehensive diagnostic services and laboratory tests. [Visit Clina-Lancet](https://www.lancet.com.ng/)
-            - **Union Diagnostic and Clinical Services Plc**: Offers diagnostic and clinical laboratory services. [Visit Union Diagnostic](https://www.uniondiagnostic.com.ng/)
-            - **PathCare Laboratories**: Specializes in pathology and laboratory medicine. [Visit PathCare](https://www.pathcarenigeria.com/)
-            - **Medbury Medical Services**: Provides various medical and laboratory services. [Visit Medbury](https://www.medburyltd.com/)
-            """)
-
-        elif sub_option == "Pharmacies":
-            st.write("### Pharmacies in Nigeria")
-            st.write("""
-            - **HealthPlus Pharmacy**: One of Nigeria's leading pharmacy chains. [Visit HealthPlus](https://www.healthplus.com.ng/)
-            - **MedPlus Pharmacy**: Offers a wide range of pharmaceutical products and services. [Visit MedPlus](https://www.medplusnig.com/)
-            - **Mopheth Pharmacy**: Provides pharmacy services and health consultations. [Visit Mopheth](https://www.mophethgroup.com/)
-            - **Jumia Pharmacy**: Online pharmacy service providing a variety of medications. [Visit Jumia Pharmacy](https://www.jumia.com.ng/pharmacy/)
-            - **NetPharmacy**: Online pharmacy offering prescription and over-the-counter medications. [Visit NetPharmacy](https://www.netpharmacy.com.ng/)
-            """)
-
-        elif sub_option == "PCOS Drugs":
-            st.write("### PCOS Drugs")
-            st.write("""
-            - **Metformin**: Commonly prescribed to manage insulin resistance in women with PCOS.
-            - **Clomiphene Citrate**: Used to stimulate ovulation in women who have difficulty becoming pregnant due to PCOS.
-            - **Letrozole**: Another medication used to induce ovulation.
-            - **Spironolactone**: Helps manage symptoms like acne and excessive hair growth.
-            - **Oral Contraceptives**: Used to regulate menstrual cycles and manage hormone levels.
-            - **Eflornithine**: Topical cream used to reduce facial hair growth.
-            - **Gonadotropins**: Injectable hormones used to stimulate ovulation.
-            """)
 
     # Food Recommendations Section
     elif main_menu == "Food Recommendations":

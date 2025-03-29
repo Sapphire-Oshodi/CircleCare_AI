@@ -1,8 +1,6 @@
 opencv-python-headless
-python_dotenv
+python-dotenv
 transformers
-numpy
-pandas
 ipykernel
 torch
 streamlit
@@ -11,7 +9,6 @@ langgraph
 langchain-core
 langchain-community
 langchain-openai
-langchain-groq
 dotenv
 pygments==2.19.1
 mdurl==0.1.2
