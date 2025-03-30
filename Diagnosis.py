@@ -34,7 +34,7 @@ else:
 # Load the trained model for medical imaging diagnosis
 @st.cache_resource
 def load_trained_model():
-    return load_model('Model/Pcos_Scan_model.h5')
+    return load_model('Pcos_Scan_model.h5')
 
 imaging_model = load_trained_model()
 
