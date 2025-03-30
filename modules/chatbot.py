@@ -6,9 +6,6 @@ from langchain.schema import HumanMessage
 # Read the OpenAI API key from Streamlit secrets
 openai_api_key = st.secrets["OPENAI_API_KEY"]
 
-# Debug: Check if the API key is loaded correctly
-st.write("Loaded OpenAI API Key:", openai_api_key)
-
 # Initialize the language model
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
 
