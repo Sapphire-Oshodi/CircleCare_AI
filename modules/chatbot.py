@@ -4,8 +4,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
 
-# Debug: Check what st.secrets contains
-st.write("Loaded secrets:", st.secrets)
+
 
 # Fetch API key solely from Streamlit secrets
 openai_api_key = st.secrets["openai"].get("api_key")
@@ -39,6 +38,8 @@ language_options = {
 }
 
 def main():
+    # Debug: Check what st.secrets contains
+    st.write("Loaded secrets:", st.secrets)
     st.set_page_config(
         page_title="CycleCare AI - Comprehensive PCOS Management",
         layout="wide",
