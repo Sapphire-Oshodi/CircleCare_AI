@@ -53,7 +53,7 @@ def main():
     
     # Display the main image at the top
     try:
-        st.image("./assets/Untitled_design.png", width=800)
+        st.image("assets/Untitled_design.png", width=800)
     except FileNotFoundError:
         st.warning("Main image not found. Please check the path.")
     
