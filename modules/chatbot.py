@@ -1,20 +1,19 @@
 import streamlit as st
 import os
-from dotenv import load_dotenv
 from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
-# Load environment variables
-load_dotenv()
+# Load API key securely from Streamlit secrets
+try:
+    openai_api_key = st.secrets["openai"]["api_key"]
+except Exception as e:
+    st.error("API key not found in st.secrets. Please add it to your secrets.toml.")
+    openai_api_key = None  # Optionally, you could exit or handle this case further
 
-# Set up API key (ensure it's set in your .env file)
-openai_api_key = os.getenv("OPENAI_API_KEY")
-if not openai_api_key:
-    st.error("API key not found. Please set it in your .env file.")
-
-# Initialize the language model
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
+# Initialize the language model if API key is available
+if openai_api_key:
+    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
 
 # Define the prompt template
 prompt_template = ChatPromptTemplate.from_template(
@@ -43,7 +42,7 @@ def main():
         page_title="CycleCare AI - Comprehensive PCOS Management",
         layout="wide",
     )
-
+    
     st.title("CycleCare AI - Comprehensive PCOS Management")
     st.markdown(
         "<h2 style='color: #070F2B; font-family: Helvetica;'>Your Personalized PCOS Companion</h2>",
@@ -55,7 +54,7 @@ def main():
     
     # Display the main image at the top
     try:
-        st.image("assets\Untitled_design.png", width=800)
+        st.image("./assets/Untitled_design.png", width=800)
     except FileNotFoundError:
         st.warning("Main image not found. Please check the path.")
     
