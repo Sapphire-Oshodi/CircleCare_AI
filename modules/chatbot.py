@@ -9,8 +9,8 @@ st.set_page_config(
     layout="wide",
 )
 
-# Create three tabs: one for API Key input, one for Chat with Ada, and one for API Request.
-tabs = st.tabs(["API Key", "Chat with Ada", "API Request"])
+# Create two tabs: one for API Key input and one for Chat with Ada
+tabs = st.tabs(["API Key", "Chat with Ada"])
 
 # ---- Tab 1: API Key Input ----
 with tabs[0]:
@@ -122,23 +122,3 @@ with tabs[1]:
             st.markdown(f"**Q{i+1}:** {chat['question']}")
             st.markdown(f"**Ada's Response ({chat['language']}):** {chat['response']}")
             st.markdown("---")
-
-# ---- Tab 3: Custom API Request ----
-with tabs[2]:
-    st.title("Custom API Request")
-    st.markdown("Enter your custom API request below and press **Submit API Request** to get a response from the model.")
-    
-    # Use a text area for longer custom input
-    api_request = st.text_area("API Request", placeholder="Type your custom API request here...")
-    
-    if st.button("Submit API Request", key="api_submit"):
-        if api_request.strip():
-            try:
-                with st.spinner("Sending API request..."):
-                    custom_response = llm.predict(api_request)
-                st.markdown("### API Response:")
-                st.markdown(custom_response)
-            except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
-        else:
-            st.warning("Please enter an API request to proceed.")
