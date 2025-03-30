@@ -10,11 +10,10 @@ st.set_page_config(
 )
 
 # Now you can safely import or execute other code
-# Fetch API key solely from Streamlit secrets
-openai_api_key = st.secrets["OPENAI_API_KEY"]
+openai_api_key = st.secrets["openai"].get("api_key")
 if not openai_api_key:
     st.error("API key not found in st.secrets. Please add it to your secrets.toml.")
-    st.stop()  # Halt execution if the key is missing
+    st.stop()
 
 # Initialize the language model using the API key from secrets
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
