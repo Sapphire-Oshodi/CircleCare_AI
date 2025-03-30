@@ -3,13 +3,20 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
-# Read the OpenAI API key from Streamlit secrets
+# Set page configuration as the very first Streamlit command
+st.set_page_config(
+    page_title="CycleCare AI - Comprehensive PCOS Management",
+    layout="wide",
+)
+
+# Now you can safely import or execute other code
+# Fetch API key solely from Streamlit secrets
 openai_api_key = st.secrets["OPENAI_API_KEY"]
+if not openai_api_key:
+    st.error("API key not found in st.secrets. Please add it to your secrets.toml.")
+    st.stop()  # Halt execution if the key is missing
 
-# Debug: Check if the API key is loaded correctly
-st.write("Loaded OpenAI API Key:", openai_api_key)
-
-# Initialize the language model
+# Initialize the language model using the API key from secrets
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
 
 # Define the prompt template
@@ -35,23 +42,17 @@ language_options = {
 }
 
 def main():
-    st.set_page_config(
-        page_title="CycleCare AI - Comprehensive PCOS Management",
-        layout="wide",
-    )
-    
     st.title("CycleCare AI - Comprehensive PCOS Management")
     st.markdown(
         "<h2 style='color: #070F2B; font-family: Helvetica;'>Your Personalized PCOS Companion</h2>",
         unsafe_allow_html=True,
     )
 
-    # Directly display the Ask Ada section without a sidebar or menu
     st.subheader("Ask Ada - Your PCOS Companion")
     
     # Display the main image at the top
     try:
-        st.image("Young Person Engaging With Telemedicine App In Healthcare Setting.png", width=600)
+        st.image("./assets/Untitled_design.png", width=800)
     except FileNotFoundError:
         st.warning("Main image not found. Please check the path.")
     
