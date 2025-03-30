@@ -28,7 +28,7 @@ if "api_key" not in st.session_state:
     st.stop()
 
 # Retrieve the API key from session state
-api_key = st.session_state["api_key"]
+api_key = st.session_state["OPENAI_API_KEY"]
 
 # Initialize the language model using the API key provided by the user
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=api_key)
