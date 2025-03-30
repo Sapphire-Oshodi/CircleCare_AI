@@ -3,6 +3,10 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
+
+# Debug: Check what st.secrets contains
+st.write("Loaded secrets:", st.secrets)
+
 # Fetch API key solely from Streamlit secrets
 openai_api_key = st.secrets["openai"].get("api_key")
 if not openai_api_key:
