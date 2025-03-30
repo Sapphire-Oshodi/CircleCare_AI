@@ -3,16 +3,10 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
+# Read the OpenAI API key from Streamlit secrets
+openai_api_key = st.secrets["openai"]["api_key"]
 
-
-
-# Fetch API key solely from Streamlit secrets
-openai_api_key = st.secrets["openai"].get("api_key")
-if not openai_api_key:
-    st.error("API key not found in st.secrets. Please add it to your secrets.toml.")
-    st.stop()  # Stop execution if key is missing
-
-# Initialize the language model using the API key from secrets
+# Initialize the language model
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
 
 # Define the prompt template
