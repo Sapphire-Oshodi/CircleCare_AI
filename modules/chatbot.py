@@ -4,15 +4,18 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
-# Load API key securely from Streamlit secrets
-try:
+# Load API key securely:
+# Attempt to get it from st.secrets; if not found, fall back to the environment variable.
+if "openai" in st.secrets and "api_key" in st.secrets["openai"]:
     openai_api_key = st.secrets["openai"]["api_key"]
-except Exception as e:
-    st.error("API key not found in st.secrets. Please add it to your secrets.toml.")
-    openai_api_key = None  # Optionally, you could exit or handle this case further
+else:
+    openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Initialize the language model if API key is available
-if openai_api_key:
+if not openai_api_key:
+    st.error("API key not found. Please add it to your Streamlit secrets or set the OPENAI_API_KEY environment variable.")
+    # Optionally, you can exit or return here
+else:
+    # Initialize the language model using the API key
     llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7, openai_api_key=openai_api_key)
 
 # Define the prompt template
