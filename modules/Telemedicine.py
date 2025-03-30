@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Image path
-TELEMEDICINE_PATH = "assets\image10.jpg"
+TELEMEDICINE_PATH = "image10.jpg"
 
 # Trusted Gynecologists Directory
 GYNECOLOGISTS_BY_STATE = {
