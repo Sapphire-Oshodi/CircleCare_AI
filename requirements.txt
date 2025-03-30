@@ -21,7 +21,7 @@ torch
 langchain
 langgraph
 langchain-core
-langchain_community
+langchain-community
 langchain-openai
 dotenv
 pygments==2.19.1
