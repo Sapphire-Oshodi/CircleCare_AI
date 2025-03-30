@@ -3,6 +3,11 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
+# Set page configuration as the very first Streamlit command
+st.set_page_config(
+    page_title="CycleCare AI - Comprehensive PCOS Management",
+    layout="wide",
+)
 # Read the OpenAI API key from Streamlit secrets
 openai_api_key = st.secrets["OPENAI_API_KEY"]
 
@@ -32,13 +37,6 @@ language_options = {
 }
 
 def main():
-    # Debug: Check what st.secrets contains
-    st.write("Loaded secrets:", st.secrets)
-    st.set_page_config(
-        page_title="CycleCare AI - Comprehensive PCOS Management",
-        layout="wide",
-    )
-    
     st.title("CycleCare AI - Comprehensive PCOS Management")
     st.markdown(
         "<h2 style='color: #070F2B; font-family: Helvetica;'>Your Personalized PCOS Companion</h2>",
