@@ -4,7 +4,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage
 
 # Read the OpenAI API key from Streamlit secrets
-openai_api_key = st.secrets["openai"]["api_key"]
+openai_api_key = st.secrets["OPENAI_API_KEY"]
 
 # Debug: Check if the API key is loaded correctly
 st.write("Loaded OpenAI API Key:", openai_api_key)
