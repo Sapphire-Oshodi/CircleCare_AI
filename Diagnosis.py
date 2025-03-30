@@ -7,7 +7,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 from PIL import Image
 import numpy as np
-import io
+import gdown
 
 def calculate_risk(answers):
     criteria_met = sum(answers[:3]) >= 1, sum(answers[3:6]) >= 1, sum(answers[6:8]) >= 1
@@ -31,10 +31,14 @@ else:
     clinical_model = None
     st.error(f"Clinical diagnosis model file '{clinical_model_path}' not found. Please upload the file.")
 
-# Load the trained model for medical imaging diagnosis
+# Download the trained model for medical imaging diagnosis from Google Drive
 @st.cache_resource
 def load_trained_model():
-    return load_model('Pcos_Scan_model.h5')
+    model_path = 'Pcos_Scan_model.h5'
+    if not os.path.exists(model_path):
+        url = 'https://drive.google.com/uc?id=1UTBOUNtIzhAtCRDzI5D7TnsGMHsY43D-'
+        gdown.download(url, model_path, quiet=False)
+    return load_model(model_path)
 
 imaging_model = load_trained_model()
 
@@ -260,67 +264,68 @@ elif options == "🩺 Medical Imaging Diagnosis":
         img_array = np.expand_dims(img_array, axis=0)
 
         # Make predictions
-        yhat = imaging_model.predict(img_array)
-        confidence = round(yhat[0][0] * 100, 1)  # Confidence rounded to 1 decimal
+        if imaging_model:
+            yhat = imaging_model.predict(img_array)
+            confidence = round(yhat[0][0] * 100, 1)  # Confidence rounded to 1 decimal
 
-        # Classification
-        result = "Noninfected" if yhat[0][0] >= threshold else "Infected"
+            # Classification
+            result = "Noninfected" if yhat[0][0] >= threshold else "Infected"
 
-        # Display results
-        st.write(f"### **Result:** {result}")
-        st.write(f"**Prediction Confidence:** {confidence}%")
+            # Display results
+            st.write(f"### **Result:** {result}")
+            st.write(f"**Prediction Confidence:** {confidence}%")
 
-        if result == "Noninfected":
-            st.success("The ultrasound image is classified as **Noninfected**.")
-            st.markdown("""
-            **Clinical Insights**:
-            - Normal ovarian size (<10 cm³).
-            - Fewer than 12 follicles, evenly distributed.
-            - Homogeneous ovarian stroma.
-            - No cystic patterns detected.
-            """)
-        else:
-            st.error("The ultrasound image is classified as **Infected**.")
-            st.markdown("""
-            **Clinical Insights**:
-            - Increased ovarian size (>10 cm³).
-            - Presence of 12+ follicles (2-9 mm) arranged peripherally.
-            - "String of pearls" appearance observed.
-            - Increased stromal echogenicity.
-            - Potential thickened endometrium.
-            """)
-
-        # Option to download or save the result
-        result_text = f"Result: {result}\nPrediction Confidence: {confidence}%"
-        if result == "Noninfected":
-            insights = """
+            if result == "Noninfected":
+                st.success("The ultrasound image is classified as **Noninfected**.")
+                st.markdown("""
+                **Clinical Insights**:
                 - Normal ovarian size (<10 cm³).
                 - Fewer than 12 follicles, evenly distributed.
                 - Homogeneous ovarian stroma.
                 - No cystic patterns detected.
-            """
-        else:
-            insights = """
+                """)
+            else:
+                st.error("The ultrasound image is classified as **Infected**.")
+                st.markdown("""
+                **Clinical Insights**:
                 - Increased ovarian size (>10 cm³).
                 - Presence of 12+ follicles (2-9 mm) arranged peripherally.
                 - "String of pearls" appearance observed.
                 - Increased stromal echogenicity.
                 - Potential thickened endometrium.
-            """
-        
-        result_text += f"\n\nClinical Insights:\n{insights.strip()}"
+                """)
 
-        st.download_button(
-            label="Download Result",
-            data=result_text,
-            file_name=f"{user_name}_PCOS_Result.txt",
-            mime="text/plain",
-        )
+            # Option to download or save the result
+            result_text = f"Result: {result}\nPrediction Confidence: {confidence}%"
+            if result == "Noninfected":
+                insights = """
+                    - Normal ovarian size (<10 cm³).
+                    - Fewer than 12 follicles, evenly distributed.
+                    - Homogeneous ovarian stroma.
+                    - No cystic patterns detected.
+                """
+            else:
+                insights = """
+                    - Increased ovarian size (>10 cm³).
+                    - Presence of 12+ follicles (2-9 mm) arranged peripherally.
+                    - "String of pearls" appearance observed.
+                    - Increased stromal echogenicity.
+                    - Potential thickened endometrium.
+                """
+            
+            result_text += f"\n\nClinical Insights:\n{insights.strip()}"
 
-        if st.button("Save Result"):
-            with open(f"{user_name}_PCOS_Result.txt", "w") as file:
-                file.write(result_text)
-            st.success("Result saved successfully.")
+            st.download_button(
+                label="Download Result",
+                data=result_text,
+                file_name=f"{user_name}_PCOS_Result.txt",
+                mime="text/plain",
+            )
+
+            if st.button("Save Result"):
+                with open(f"{user_name}_PCOS_Result.txt", "w") as file:
+                    file.write(result_text)
+                st.success("Result saved successfully.")
 
 # Footer note
 st.markdown("""
